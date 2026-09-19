@@ -6,7 +6,7 @@ Oatmeal is a tiny native macOS utility that confirms selected keyboard shortcuts
 
 Copying has almost no visible feedback. For people with OCD, or anyone caught in a checking loop, that can mean pressing `⌘C` or `Ctrl+C` repeatedly just to feel sure it worked. Oatmeal shows a small confirmation without intercepting the shortcut, so the copy still reaches the application normally.
 
-Oatmeal is a usability aid, not medical treatment. Its purpose is simply to make an otherwise invisible action visible. Making you feel certain :DC
+Oatmeal is a usability aid, not medical treatment. Its purpose is simply to make an otherwise invisible action visible. Making you feel certain :D
 
 ## Use
 
