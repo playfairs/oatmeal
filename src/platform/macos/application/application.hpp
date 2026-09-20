@@ -4,4 +4,4 @@ namespace oatmeal {
 
 int run();
 
-} // namespace oatmeal
+}  // namespace oatmeal
