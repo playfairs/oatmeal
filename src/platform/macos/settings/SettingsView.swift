@@ -15,11 +15,12 @@ private final class SettingsViewModel: ObservableObject {
     @Published var theme: Int
     @Published var position: Int
     @Published var duration: Double
+    @Published var launchOnLogin: Bool
     @Published var recording = false
     private let callback: OatmealSettingsCallback
     private var monitor: Any?
 
-    init(shortcuts: String, theme: Int32, position: Int32, duration: Double, callback: @escaping OatmealSettingsCallback) {
+    init(shortcuts: String, theme: Int32, position: Int32, duration: Double, launchOnLogin: Int32, callback: @escaping OatmealSettingsCallback) {
         self.shortcuts = shortcuts.split(separator: "\n").enumerated().compactMap { index, line in
             let fields = line.split(separator: "|", maxSplits: 2, omittingEmptySubsequences: false)
             guard fields.count == 3 else { return nil }
@@ -28,6 +29,7 @@ private final class SettingsViewModel: ObservableObject {
         self.theme = Int(theme)
         self.position = Int(position)
         self.duration = duration
+        self.launchOnLogin = launchOnLogin != 0
         self.callback = callback
     }
 
@@ -69,12 +71,17 @@ private final class SettingsViewModel: ObservableObject {
         callback(8, 0, nil)
     }
 
+    func setLaunchOnLogin(_ enabled: Bool) {
+        launchOnLogin = enabled
+        callback(9, enabled ? 1 : 0, nil)
+    }
+
     func startRecording() {
         guard !recording else { return }
         recording = true
         monitor = NSEvent.addLocalMonitorForEvents(matching: .keyDown) { [weak self] event in
             guard let self, self.recording else { return event }
-            guard let key = Self.key(for: event.keyCode) else { return event }
+            guard let key = Self.key(for: event) else { return event }
             let configKey = Self.configKey(key: key, flags: event.modifierFlags)
             let label = key.uppercased()
             self.callback(7, 0, configKey)
@@ -96,9 +103,30 @@ private final class SettingsViewModel: ObservableObject {
         return parts.joined(separator: "+")
     }
 
-    private static func key(for code: UInt16) -> String? {
-        let keys = ["a", "s", "d", "f", "h", "g", "z", "x", "c", "v", "b", "q", "w", "e", "r", "y", "t", "1", "2", "3", "4", "6", "5", "=", "9", "7", "-", "8", "0", "]", "o", "u", "[", "i", "p", "return", "l", "j", "'", "k", ";", "\\", "comma", "/", "n", "m", ".", "tab", "space", "`", "delete", "escape", "right", "left", "down", "up"]
-        return Int(code) < keys.count ? keys[Int(code)] : nil
+    private static func key(for event: NSEvent) -> String? {
+        if let characters = event.charactersIgnoringModifiers, !characters.isEmpty {
+            let normalized = characters.lowercased()
+            switch normalized {
+            case "\u{7f}": return "delete"
+            case "\u{1b}": return "escape"
+            case "\r", "\n": return "return"
+            case "\t": return "tab"
+            case " ": return "space"
+            default: return normalized
+            }
+        }
+
+        switch event.keyCode {
+        case 126: return "up"
+        case 125: return "down"
+        case 124: return "right"
+        case 123: return "left"
+        case 51: return "delete"
+        case 53: return "escape"
+        case 36: return "return"
+        case 48: return "tab"
+        default: return nil
+        }
     }
 }
 
@@ -150,6 +178,13 @@ private struct SettingsView: View {
                         Text(String(format: "%.1fs", model.duration)).monospacedDigit().frame(width: 42, alignment: .trailing)
                     }
                 }
+
+                Section("Startup") {
+                    Toggle("Launch Oatmeal when you log in", isOn: Binding(get: { model.launchOnLogin }, set: { model.setLaunchOnLogin($0) }))
+                    Text("Oatmeal will run quietly in the menu bar after login.")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
             }
             .listStyle(.inset)
 
@@ -182,21 +217,24 @@ private var settingsWindow: NSWindow?
 private var settingsModel: SettingsViewModel?
 
 @_cdecl("oatmeal_swift_show_settings")
-public func oatmealSwiftShowSettings(_ shortcuts: UnsafePointer<CChar>, _ theme: Int32, _ position: Int32, _ duration: Double, _ callback: OatmealSettingsCallback?) {
+public func oatmealSwiftShowSettings(_ shortcuts: UnsafePointer<CChar>, _ theme: Int32, _ position: Int32, _ duration: Double, _ launchOnLogin: Int32, _ callback: OatmealSettingsCallback?) {
     guard let callback else { return }
-    let model = SettingsViewModel(shortcuts: String(cString: shortcuts), theme: theme, position: position, duration: duration, callback: callback)
-    settingsModel = model
-    let controller = NSHostingController(rootView: SettingsView(model: model))
-    if settingsWindow == nil {
-        settingsWindow = NSWindow(contentViewController: controller)
-        settingsWindow?.title = "Oatmeal Settings"
-        settingsWindow?.styleMask = [.titled, .closable, .resizable]
-        settingsWindow?.isReleasedWhenClosed = false
-    } else {
-        settingsWindow?.contentViewController = controller
+    let shortcutPayload = String(cString: shortcuts)
+    DispatchQueue.main.async {
+        let model = SettingsViewModel(shortcuts: shortcutPayload, theme: theme, position: position, duration: duration, launchOnLogin: launchOnLogin, callback: callback)
+        settingsModel = model
+        let controller = NSHostingController(rootView: SettingsView(model: model))
+        if settingsWindow == nil {
+            settingsWindow = NSWindow(contentViewController: controller)
+            settingsWindow?.title = "Oatmeal Settings"
+            settingsWindow?.styleMask = [.titled, .closable, .resizable]
+            settingsWindow?.isReleasedWhenClosed = false
+        } else {
+            settingsWindow?.contentViewController = controller
+        }
+        settingsWindow?.setContentSize(NSSize(width: 680, height: 560))
+        settingsWindow?.center()
+        settingsWindow?.makeKeyAndOrderFront(nil)
+        NSApp.activate(ignoringOtherApps: true)
     }
-    settingsWindow?.setContentSize(NSSize(width: 680, height: 560))
-    settingsWindow?.center()
-    settingsWindow?.makeKeyAndOrderFront(nil)
-    NSApp.activate(ignoringOtherApps: true)
 }
