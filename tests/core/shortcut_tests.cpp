@@ -1,4 +1,4 @@
-#include "core/shortcut.hpp"
+#include "core/shortcut/shortcut.hpp"
 
 #include <cassert>
 

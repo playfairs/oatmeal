@@ -1,4 +1,4 @@
-#include "core/config.hpp"
+#include "core/config/config.hpp"
 
 #include <cassert>
 #include <filesystem>

@@ -1,4 +1,4 @@
-#include "core/aggregation.hpp"
+#include "core/aggregation/aggregation.hpp"
 
 #include <cassert>
 #include <chrono>
