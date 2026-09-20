@@ -15,6 +15,8 @@
 }
 @end
 
+static MenuController *oatmeal_menu_controller = nil;
+
 namespace oatmeal {
 
 void install_menu_bar(SettingsModel &model, Overlay &overlay, Listener &listener) {
@@ -26,19 +28,19 @@ void install_menu_bar(SettingsModel &model, Overlay &overlay, Listener &listener
   if (status_item.button.image == nil)
     status_item.button.title = @"⌘";
   status_item.button.toolTip = @"Oatmeal";
-  MenuController *menu_controller = [MenuController new];
+  oatmeal_menu_controller = [MenuController new];
   NSMenu *menu = [[NSMenu alloc] initWithTitle:@"Oatmeal"];
   NSMenuItem *settings =
       [[NSMenuItem alloc] initWithTitle:@"Settings…"
                                  action:@selector(showSettings:)
                           keyEquivalent:@","];
-  settings.target = menu_controller;
+  settings.target = oatmeal_menu_controller;
   [menu addItem:settings];
   [menu addItem:[NSMenuItem separatorItem]];
   NSMenuItem *quit = [[NSMenuItem alloc] initWithTitle:@"Quit Oatmeal"
                                                 action:@selector(quitOatmeal:)
                                          keyEquivalent:@"q"];
-  quit.target = menu_controller;
+  quit.target = oatmeal_menu_controller;
   [menu addItem:quit];
   status_item.menu = menu;
 }
