@@ -1,14 +1,13 @@
-#include "core/config/config.hpp"
-
 #include <cassert>
 #include <filesystem>
 #include <fstream>
 
+#include "core/config/config.hpp"
+
 using namespace oatmeal;
 
 int main() {
-  const auto path =
-      std::filesystem::temp_directory_path() / "oatmeal-config-test.conf";
+  const auto path = std::filesystem::temp_directory_path() / "oatmeal-config-test.conf";
   assert(write_default_config(path));
   const auto entries = load_config(path);
   assert(entries.size() == 3);
