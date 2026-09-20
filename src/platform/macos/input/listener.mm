@@ -1,8 +1,8 @@
+#include "platform/macos/input/listener.hpp"
+
 #import <AppKit/AppKit.h>
 #import <ApplicationServices/ApplicationServices.h>
 #import <Carbon/Carbon.h>
-
-#include "platform/macos/input/listener.hpp"
 
 #include <iostream>
 #include <string>
@@ -29,8 +29,7 @@ struct Listener::Impl {
     NSDictionary *options = @{(__bridge id)kAXTrustedCheckOptionPrompt : @YES};
     AXIsProcessTrustedWithOptions((__bridge CFDictionaryRef)options);
     CGEventMask mask = CGEventMaskBit(kCGEventKeyDown);
-    tap = CGEventTapCreate(kCGHIDEventTap, kCGHeadInsertEventTap,
-                           kCGEventTapOptionListenOnly, mask,
+    tap = CGEventTapCreate(kCGHIDEventTap, kCGHeadInsertEventTap, kCGEventTapOptionListenOnly, mask,
                            &Listener::Impl::event_callback, this);
     if (tap != nullptr) {
       source = CFMachPortCreateRunLoopSource(kCFAllocatorDefault, tap, 0);
@@ -45,24 +44,17 @@ struct Listener::Impl {
                                         ModifierMask modifiers = 0;
                                         const auto flags = event.modifierFlags;
                                         if (flags & NSEventModifierFlagCommand)
-                                          modifiers |=
-                                              modifier_mask(Modifier::Command);
+                                          modifiers |= modifier_mask(Modifier::Command);
                                         if (flags & NSEventModifierFlagControl)
-                                          modifiers |=
-                                              modifier_mask(Modifier::Control);
+                                          modifiers |= modifier_mask(Modifier::Control);
                                         if (flags & NSEventModifierFlagOption)
-                                          modifiers |=
-                                              modifier_mask(Modifier::Option);
+                                          modifiers |= modifier_mask(Modifier::Option);
                                         if (flags & NSEventModifierFlagShift)
-                                          modifiers |=
-                                              modifier_mask(Modifier::Shift);
+                                          modifiers |= modifier_mask(Modifier::Shift);
                                         if (flags & NSEventModifierFlagFunction)
-                                          modifiers |=
-                                              modifier_mask(Modifier::Function);
-                                        handle_key_event(
-                                            static_cast<unsigned short>(
-                                                event.keyCode),
-                                            modifiers);
+                                          modifiers |= modifier_mask(Modifier::Function);
+                                        handle_key_event(static_cast<unsigned short>(event.keyCode),
+                                                         modifiers);
                                       }];
     if (global_monitor != nil)
       return true;
@@ -76,11 +68,10 @@ struct Listener::Impl {
     shortcuts = updated;
   }
 
-  static CGEventRef event_callback(CGEventTapProxy, CGEventType,
-                                   CGEventRef event, void *refcon) {
+  static CGEventRef event_callback(CGEventTapProxy, CGEventType, CGEventRef event, void *refcon) {
     auto *listener = static_cast<Listener::Impl *>(refcon);
-    const auto keycode = static_cast<unsigned short>(
-        CGEventGetIntegerValueField(event, kCGKeyboardEventKeycode));
+    const auto keycode =
+        static_cast<unsigned short>(CGEventGetIntegerValueField(event, kCGKeyboardEventKeycode));
     ModifierMask modifiers = 0;
     const auto flags = CGEventGetFlags(event);
     if (flags & kCGEventFlagMaskCommand)
@@ -121,19 +112,23 @@ struct Listener::Impl {
       UniCharCount length = 0;
       CGEventKeyboardGetUnicodeString(event, sizeof(buffer), &length, buffer);
       if (length > 0) {
-        const auto characters = CFStringCreateWithCharacters(
-            kCFAllocatorDefault, buffer, length);
+        const auto characters = CFStringCreateWithCharacters(kCFAllocatorDefault, buffer, length);
         if (characters != nullptr) {
           NSString *ns = (__bridge NSString *)characters;
           const auto lowered = [ns.lowercaseString UTF8String];
           CFRelease(characters);
           if (lowered != nullptr) {
             std::string value(lowered);
-            if (value == " ") return "space";
-            if (value == "\n" || value == "\r") return "return";
-            if (value == "\t") return "tab";
-            if (value == "\x7f") return "delete";
-            if (value == "\x1b") return "escape";
+            if (value == " ")
+              return "space";
+            if (value == "\n" || value == "\r")
+              return "return";
+            if (value == "\t")
+              return "tab";
+            if (value == "\x7f")
+              return "delete";
+            if (value == "\x1b")
+              return "escape";
             return value;
           }
         }
@@ -141,15 +136,24 @@ struct Listener::Impl {
     }
 
     switch (code) {
-      case 126: return "up";
-      case 125: return "down";
-      case 124: return "right";
-      case 123: return "left";
-      case 51: return "delete";
-      case 53: return "escape";
-      case 36: return "return";
-      case 48: return "tab";
-      default: return std::string{};
+      case 126:
+        return "up";
+      case 125:
+        return "down";
+      case 124:
+        return "right";
+      case 123:
+        return "left";
+      case 51:
+        return "delete";
+      case 53:
+        return "escape";
+      case 36:
+        return "return";
+      case 48:
+        return "tab";
+      default:
+        return std::string{};
     }
   }
 
@@ -160,16 +164,17 @@ struct Listener::Impl {
   id global_monitor = nil;
 };
 
-Listener::Listener(const std::vector<ShortcutConfig> &shortcuts,
-                   Handler handler)
+Listener::Listener(const std::vector<ShortcutConfig> &shortcuts, Handler handler)
     : impl_(std::make_unique<Impl>(shortcuts, std::move(handler))) {}
 
 Listener::~Listener() = default;
 
-bool Listener::start() { return impl_->start(); }
+bool Listener::start() {
+  return impl_->start();
+}
 
 void Listener::set_shortcuts(const std::vector<ShortcutConfig> &shortcuts) {
   impl_->set_shortcuts(shortcuts);
 }
 
-} // namespace oatmeal
+}  // namespace oatmeal
