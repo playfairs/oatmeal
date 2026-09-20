@@ -1,3 +1,5 @@
+set swift_settings_object := `mkdir -p build/debug/oatmeal && swiftc -parse-as-library -target arm64-apple-macosx15.0 -c src/platform/macos/settings/SettingsView.swift -o build/debug/oatmeal/SettingsView.o && printf build/debug/oatmeal/SettingsView.o`
+
 project "oatmeal" {
     version = "0.1.0"
 
@@ -13,6 +15,7 @@ project "oatmeal" {
             "src/core/config.cpp",
             "src/core/aggregation.cpp"
         ]
+        install = true
         include_dirs = ["src"]
         flags = ["-std=c++20", "-Wall", "-Wextra", "-pedantic"]
         linker_flags = ["build/debug/oatmeal/SettingsView.o", "-framework", "AppKit", "-framework", "Foundation", "-framework", "ApplicationServices", "-framework", "Carbon", "-framework", "SwiftUI"]
