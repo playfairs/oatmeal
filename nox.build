@@ -5,15 +5,15 @@ project "oatmeal" {
 
     executable "oatmeal" {
         sources = [
-            "src/main.mm",
-            "src/platform/macos/application.mm",
+            "src/main.cpp",
+            "src/platform/macos/application/application.mm",
             "src/platform/macos/overlay/overlay.mm",
             "src/platform/macos/input/listener.mm",
             "src/platform/macos/menu/menu.mm",
             "src/platform/macos/settings/settings.mm",
-            "src/core/shortcut.cpp",
-            "src/core/config.cpp",
-            "src/core/aggregation.cpp"
+            "src/core/shortcut/shortcut.cpp",
+            "src/core/config/config.cpp",
+            "src/core/aggregation/aggregation.cpp"
         ]
         install = true
         include_dirs = ["src"]

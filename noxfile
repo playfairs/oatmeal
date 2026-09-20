@@ -1,5 +1,5 @@
 tasks:
   test:
-    run: mkdir -p build && clang++ -std=c++20 -Wall -Wextra -pedantic -Isrc tests/core/shortcut_tests.cpp src/core/shortcut.cpp -o build/shortcut-tests && ./build/shortcut-tests && clang++ -std=c++20 -Wall -Wextra -pedantic -Isrc tests/core/aggregation_tests.cpp src/core/shortcut.cpp src/core/aggregation.cpp -o build/aggregation-tests && ./build/aggregation-tests && clang++ -std=c++20 -Wall -Wextra -pedantic -Isrc tests/core/config_tests.cpp src/core/shortcut.cpp src/core/config.cpp -o build/config-tests && ./build/config-tests
+    run: mkdir -p build && clang++ -std=c++20 -Wall -Wextra -pedantic -Isrc tests/core/shortcut_tests.cpp src/core/shortcut/shortcut.cpp -o build/shortcut-tests && ./build/shortcut-tests && clang++ -std=c++20 -Wall -Wextra -pedantic -Isrc tests/core/aggregation_tests.cpp src/core/shortcut/shortcut.cpp src/core/aggregation/aggregation.cpp -o build/aggregation-tests && ./build/aggregation-tests && clang++ -std=c++20 -Wall -Wextra -pedantic -Isrc tests/core/config_tests.cpp src/core/shortcut/shortcut.cpp src/core/config/config.cpp -o build/config-tests && ./build/config-tests
   app:
     run: nox rebuild && bash build_app.sh
