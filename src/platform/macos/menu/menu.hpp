@@ -1,6 +1,6 @@
 #pragma once
 
-#include "overlay/overlay.hpp"
+#include "application/overlay.hpp"
 #include "platform/macos/input/listener.hpp"
 #include "platform/macos/settings/settings.hpp"
 
