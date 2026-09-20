@@ -1,6 +1,6 @@
 #pragma once
 
-#include "core/config.hpp"
+#include "core/config/config.hpp"
 
 #include <functional>
 #include <memory>
