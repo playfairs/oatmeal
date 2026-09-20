@@ -22,6 +22,8 @@ nox test
 
 Oatmeal runs in the menu bar. Open **Settings** to enable or disable shortcuts, change labels, record new combinations, and adjust the overlay theme, position, and duration.
 
+The **Launch Oatmeal when you log in** setting installs a per-user macOS LaunchAgent at `~/Library/LaunchAgents/com.oatmeal.app.plist`. Disable the setting to remove it. This is appropriate for the current command-line build; a future app bundle could use Apple's `SMAppService` login-item API instead.
+
 The default shortcuts are:
 
 - `⌘C` — Clicked
