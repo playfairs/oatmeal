@@ -1,8 +1,8 @@
 #import <AppKit/AppKit.h>
 
-#include "core/aggregation.hpp"
-#include "core/config.hpp"
-#include "platform/macos/application.hpp"
+#include "core/aggregation/aggregation.hpp"
+#include "core/config/config.hpp"
+#include "platform/macos/application/application.hpp"
 #include "platform/macos/input/listener.hpp"
 #include "platform/macos/menu/menu.hpp"
 #include "platform/macos/overlay/overlay.hpp"
