@@ -52,11 +52,7 @@ std::string shortcut_payload() {
 }
 
 std::filesystem::path executable_path() {
-  uint32_t size = 0;
-  _NSGetExecutablePath(nullptr, &size);
-  std::string buffer(size, '\0');
-  if (_NSGetExecutablePath(buffer.data(), &size) != 0) return {};
-  return std::filesystem::weakly_canonical(buffer.c_str());
+  return std::filesystem::path("/Applications/Oatmeal.app");
 }
 
 bool run_launchctl(const std::vector<std::string> &arguments) {
@@ -95,21 +91,13 @@ bool sync_launch_agent(const SettingsModel &model) {
   const auto executable = executable_path();
   if (executable.empty()) return false;
 
-  const bool is_app_bundle = executable.string().find(".app") != std::string::npos;
-  
-  std::string program_args;
-  if (is_app_bundle) {
-    program_args = "<string>/usr/bin/open</string><string>-a</string><string>" + executable.string() + "</string>";
-  } else {
-    program_args = "<string>" + executable.string() + "</string>";
-  }
-
   const auto plist = std::string("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n") +
                     "<!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" "
                     "\"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">\n" +
                     "<plist version=\"1.0\"><dict>\n" +
                     "<key>Label</key><string>com.oatmeal.app</string>\n" +
-                    "<key>ProgramArguments</key><array>" + program_args + "</array>\n" +
+                    "<key>ProgramArguments</key><array><string>/usr/bin/open</string><string>-a</string><string>" +
+                    executable.string() + "</string></array>\n" +
                     "<key>RunAtLoad</key><true/>\n" +
                     "<key>ProcessType</key><string>Background</string>\n" +
                     "</dict></plist>\n";

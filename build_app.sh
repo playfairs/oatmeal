@@ -12,6 +12,11 @@ chmod +x "$APP_BUNDLE/Contents/MacOS/oatmeal"
 
 cp icons/Icon-macOS-Default-1024x1024@1x.icns "$APP_BUNDLE/Contents/Resources/AppIcon.icns"
 
-codesign --force --deep --sign - "$APP_BUNDLE"
+# codesign --remove-signature "$APP_BUNDLE" 2>/dev/null || true
 
-echo "App bundle created at $APP_BUNDLE"
+# codesign --force --deep --sign - --identifier com.oatmeal.app "$APP_BUNDLE"
+
+rm -rf /Applications/Oatmeal.app
+cp -R "$APP_BUNDLE" /Applications/
+
+echo "App bundle created at $APP_BUNDLE and installed to /Applications"
