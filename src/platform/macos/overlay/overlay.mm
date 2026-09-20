@@ -2,7 +2,7 @@
 
 #include "platform/macos/overlay/overlay.hpp"
 
-#include "overlay/overlay.hpp"
+#include "application/overlay.hpp"
 
 #include <string>
 
