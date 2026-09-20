@@ -1,4 +1,4 @@
-#include "shortcut.hpp"
+#include "core/shortcut/shortcut.hpp"
 
 #include <algorithm>
 #include <cctype>
