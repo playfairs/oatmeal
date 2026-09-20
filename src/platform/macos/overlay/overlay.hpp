@@ -1,11 +1,11 @@
 #pragma once
 
-#include "application/overlay.hpp"
-
 #include <memory>
+
+#include "application/overlay.hpp"
 
 namespace oatmeal {
 
 std::unique_ptr<Overlay> create_overlay();
 
-} // namespace oatmeal
+}  // namespace oatmeal
