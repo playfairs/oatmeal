@@ -8,6 +8,10 @@ Copying has almost no visible feedback. For people with OCD, or anyone caught in
 
 Oatmeal is a usability aid, not medical treatment. Its purpose is simply to make an otherwise invisible action visible. Making you feel certain :D
 
+### Why is it called Oatmeal?
+
+![](./assets/oatmeal.png)
+
 ## Use
 
 CURRENT Requirements: macOS, Apple Command Line Tools, Nix, and Nox. (Plans to add support for Windows and Linux are coming soon dw)
