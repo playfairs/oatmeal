@@ -1,29 +1,29 @@
 #pragma once
 
-#include "core/config/config.hpp"
-
 #include <functional>
 #include <memory>
 #include <vector>
 
+#include "core/config/config.hpp"
+
 namespace oatmeal {
 
 class Listener {
-public:
-  using Handler = std::function<void(const ShortcutConfig &)>;
+ public:
+  using Handler = std::function<void(const ShortcutConfig&)>;
 
-  Listener(const std::vector<ShortcutConfig> &shortcuts, Handler handler);
+  Listener(const std::vector<ShortcutConfig>& shortcuts, Handler handler);
   ~Listener();
 
-  Listener(const Listener &) = delete;
-  Listener &operator=(const Listener &) = delete;
+  Listener(const Listener&) = delete;
+  Listener& operator=(const Listener&) = delete;
 
   bool start();
-  void set_shortcuts(const std::vector<ShortcutConfig> &shortcuts);
+  void set_shortcuts(const std::vector<ShortcutConfig>& shortcuts);
 
-private:
+ private:
   struct Impl;
   std::unique_ptr<Impl> impl_;
 };
 
-} // namespace oatmeal
+}  // namespace oatmeal
