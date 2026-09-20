@@ -2,10 +2,8 @@
 
 namespace oatmeal {
 
-int TriggerAggregator::record(const Shortcut &shortcut,
-                              std::chrono::steady_clock::time_point now) {
-  if (last_shortcut_ && *last_shortcut_ == shortcut &&
-      now - last_time_ <= window_) {
+int TriggerAggregator::record(const Shortcut& shortcut, std::chrono::steady_clock::time_point now) {
+  if (last_shortcut_ && *last_shortcut_ == shortcut && now - last_time_ <= window_) {
     ++count_;
   } else {
     last_shortcut_ = shortcut;
@@ -15,4 +13,4 @@ int TriggerAggregator::record(const Shortcut &shortcut,
   return count_;
 }
 
-} // namespace oatmeal
+}  // namespace oatmeal
