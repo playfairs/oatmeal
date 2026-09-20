@@ -1,19 +1,19 @@
 #pragma once
 
-#include "application/overlay.hpp"
-#include "core/config/config.hpp"
-
 #include <filesystem>
 #include <string>
 #include <vector>
+
+#include "application/overlay.hpp"
+#include "core/config/config.hpp"
 
 namespace oatmeal {
 
 class Listener;
 
 class SettingsModel {
-public:
-  static SettingsModel load(const std::filesystem::path &config_path);
+ public:
+  static SettingsModel load(const std::filesystem::path& config_path);
 
   bool save() const;
 
@@ -28,4 +28,4 @@ public:
 void install_settings_ui(SettingsModel& model, Overlay& overlay, Listener& listener);
 void show_settings_window();
 
-} // namespace oatmeal
+}  // namespace oatmeal
