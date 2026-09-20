@@ -95,13 +95,21 @@ bool sync_launch_agent(const SettingsModel &model) {
   const auto executable = executable_path();
   if (executable.empty()) return false;
 
+  const bool is_app_bundle = executable.string().find(".app") != std::string::npos;
+  
+  std::string program_args;
+  if (is_app_bundle) {
+    program_args = "<string>/usr/bin/open</string><string>-a</string><string>" + executable.string() + "</string>";
+  } else {
+    program_args = "<string>" + executable.string() + "</string>";
+  }
+
   const auto plist = std::string("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n") +
                     "<!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" "
                     "\"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">\n" +
                     "<plist version=\"1.0\"><dict>\n" +
                     "<key>Label</key><string>com.oatmeal.app</string>\n" +
-                    "<key>ProgramArguments</key><array><string>" +
-                    executable.string() + "</string></array>\n" +
+                    "<key>ProgramArguments</key><array>" + program_args + "</array>\n" +
                     "<key>RunAtLoad</key><true/>\n" +
                     "<key>ProcessType</key><string>Background</string>\n" +
                     "</dict></plist>\n";
