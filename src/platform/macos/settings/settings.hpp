@@ -1,7 +1,7 @@
 #pragma once
 
-#include "core/config.hpp"
-#include "overlay/overlay.hpp"
+#include "application/overlay.hpp"
+#include "core/config/config.hpp"
 
 #include <filesystem>
 #include <string>
