@@ -1,6 +1,6 @@
-#include "core/shortcut/shortcut.hpp"
-
 #include <cassert>
+
+#include "core/shortcut/shortcut.hpp"
 
 using namespace oatmeal;
 
