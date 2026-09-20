@@ -15,11 +15,10 @@ struct OverlaySettings {
 };
 
 class Overlay {
-public:
+ public:
   virtual ~Overlay() = default;
-  virtual void show(std::string_view shortcut, std::string_view label,
-                    int count) = 0;
-  virtual void set_settings(const OverlaySettings &settings) = 0;
+  virtual void show(std::string_view shortcut, std::string_view label, int count) = 0;
+  virtual void set_settings(const OverlaySettings& settings) = 0;
 };
 
-} // namespace oatmeal
+}  // namespace oatmeal
