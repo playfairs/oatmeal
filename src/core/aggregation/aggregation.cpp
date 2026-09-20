@@ -1,4 +1,4 @@
-#include "aggregation.hpp"
+#include "core/aggregation/aggregation.hpp"
 
 namespace oatmeal {
 

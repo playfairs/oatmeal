@@ -1,6 +1,6 @@
 #pragma once
 
-#include "shortcut.hpp"
+#include "core/shortcut/shortcut.hpp"
 
 #include <chrono>
 #include <optional>
