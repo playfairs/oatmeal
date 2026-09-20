@@ -21,11 +21,11 @@ struct Shortcut {
   ModifierMask modifiers = 0;
   std::string key;
 
-  bool operator==(const Shortcut &) const = default;
+  bool operator==(const Shortcut&) const = default;
 };
 
 std::optional<Shortcut> parse_shortcut(std::string_view value);
-std::string format_shortcut(const Shortcut &shortcut);
+std::string format_shortcut(const Shortcut& shortcut);
 ModifierMask modifier_mask(Modifier modifier);
 
-} // namespace oatmeal
+}  // namespace oatmeal
