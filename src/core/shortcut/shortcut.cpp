@@ -10,10 +10,9 @@ namespace {
 
 std::string lower(std::string_view value) {
   std::string result(value);
-  std::transform(result.begin(), result.end(), result.begin(),
-                 [](unsigned char character) {
-                   return static_cast<char>(std::tolower(character));
-                 });
+  std::transform(result.begin(), result.end(), result.begin(), [](unsigned char character) {
+    return static_cast<char>(std::tolower(character));
+  });
   return result;
 }
 
@@ -22,8 +21,7 @@ std::vector<std::string> split(std::string_view value) {
   std::size_t start = 0;
   while (start <= value.size()) {
     const auto end = value.find('+', start);
-    parts.emplace_back(
-        value.substr(start, end == std::string_view::npos ? end : end - start));
+    parts.emplace_back(value.substr(start, end == std::string_view::npos ? end : end - start));
     if (end == std::string_view::npos) {
       break;
     }
@@ -34,15 +32,14 @@ std::vector<std::string> split(std::string_view value) {
 
 std::string display_key(std::string key) {
   if (key.size() == 1) {
-    key[0] =
-        static_cast<char>(std::toupper(static_cast<unsigned char>(key[0])));
+    key[0] = static_cast<char>(std::toupper(static_cast<unsigned char>(key[0])));
   } else if (key == "escape") {
     key = "Esc";
   }
   return key;
 }
 
-} // namespace
+}  // namespace
 
 ModifierMask modifier_mask(Modifier modifier) {
   return static_cast<ModifierMask>(modifier);
@@ -51,7 +48,7 @@ ModifierMask modifier_mask(Modifier modifier) {
 std::optional<Shortcut> parse_shortcut(std::string_view value) {
   Shortcut shortcut;
   bool has_key = false;
-  for (const auto &raw_part : split(value)) {
+  for (const auto& raw_part : split(value)) {
     const auto part = lower(raw_part);
     if (part.empty()) {
       return std::nullopt;
@@ -79,7 +76,7 @@ std::optional<Shortcut> parse_shortcut(std::string_view value) {
   return shortcut;
 }
 
-std::string format_shortcut(const Shortcut &shortcut) {
+std::string format_shortcut(const Shortcut& shortcut) {
   std::string result;
   if (shortcut.modifiers & modifier_mask(Modifier::Command))
     result += "⌘ ";
@@ -95,4 +92,4 @@ std::string format_shortcut(const Shortcut &shortcut) {
   return result;
 }
 
-} // namespace oatmeal
+}  // namespace oatmeal
