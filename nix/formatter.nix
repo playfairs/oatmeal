@@ -17,7 +17,7 @@ pkgs.writeShellApplication {
           clang-format --style=file:.clang-format -i "$file"
           ;;
       esac
-    done < <(find . -type f \( \
+    done < <(find . \( -path '*/bin' -o -path '*/obj' -o -path './.git' \) -prune -o -type f \( \
       -name '*.h' -o \
       -name '*.hh' -o \
       -name '*.hpp' -o \
@@ -30,7 +30,11 @@ pkgs.writeShellApplication {
       -name '*.mm' \
     \) -print0)
 
-    find . -type f -name '*.cs' -print0 | xargs -0 -r csharpier --write
-    find . -type f -name '*.swift' -print0 | xargs -0 -r swift-format --in-place
+    while IFS= read -r -d ''\'' file; do
+      csharpier format "$file"
+    done < <(find . \( -path '*/bin' -o -path '*/obj' -o -path './.git' \) -prune -o -type f -name '*.cs' -print0)
+
+    find . \( -path '*/bin' -o -path '*/obj' -o -path './.git' \) -prune -o -type f -name '*.swift' -print0 | \
+      xargs -0 -r swift-format --in-place
   '';
 }

@@ -1,3 +1,5 @@
 build/
 nox.state
 .DS_Store
+src/platform/windows/bin/
+src/platform/windows/obj/
