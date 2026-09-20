@@ -1,6 +1,7 @@
+#include "platform/macos/menu/menu.hpp"
+
 #import <AppKit/AppKit.h>
 
-#include "platform/macos/menu/menu.hpp"
 #include "platform/macos/settings/settings.hpp"
 
 @interface MenuController : NSObject
@@ -21,8 +22,8 @@ namespace oatmeal {
 
 void install_menu_bar(SettingsModel &model, Overlay &overlay, Listener &listener) {
   install_settings_ui(model, overlay, listener);
-  NSStatusItem *status_item = [[NSStatusBar systemStatusBar]
-      statusItemWithLength:NSVariableStatusItemLength];
+  NSStatusItem *status_item =
+      [[NSStatusBar systemStatusBar] statusItemWithLength:NSVariableStatusItemLength];
   status_item.button.image = [NSImage imageWithSystemSymbolName:@"keyboard"
                                        accessibilityDescription:@"Oatmeal"];
   if (status_item.button.image == nil)
@@ -30,10 +31,9 @@ void install_menu_bar(SettingsModel &model, Overlay &overlay, Listener &listener
   status_item.button.toolTip = @"Oatmeal";
   oatmeal_menu_controller = [MenuController new];
   NSMenu *menu = [[NSMenu alloc] initWithTitle:@"Oatmeal"];
-  NSMenuItem *settings =
-      [[NSMenuItem alloc] initWithTitle:@"Settings…"
-                                 action:@selector(showSettings:)
-                          keyEquivalent:@","];
+  NSMenuItem *settings = [[NSMenuItem alloc] initWithTitle:@"Settings…"
+                                                    action:@selector(showSettings:)
+                                             keyEquivalent:@","];
   settings.target = oatmeal_menu_controller;
   [menu addItem:settings];
   [menu addItem:[NSMenuItem separatorItem]];
@@ -45,4 +45,4 @@ void install_menu_bar(SettingsModel &model, Overlay &overlay, Listener &listener
   status_item.menu = menu;
 }
 
-} // namespace oatmeal
+}  // namespace oatmeal
