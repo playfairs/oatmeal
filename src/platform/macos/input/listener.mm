@@ -93,12 +93,19 @@ struct Listener::Impl {
       modifiers |= modifier_mask(Modifier::Shift);
     if (flags & kCGEventFlagMaskSecondaryFn)
       modifiers |= modifier_mask(Modifier::Function);
-    listener->handle_key_event(keycode, modifiers);
+    const auto key = Listener::Impl::key_for_code(keycode, event);
+    if (!key.empty()) {
+      const auto pressed = Shortcut{modifiers, key};
+      for (const auto &shortcut : listener->shortcuts) {
+        if (shortcut.enabled && shortcut.shortcut == pressed)
+          listener->handler(shortcut);
+      }
+    }
     return event;
   }
 
   void handle_key_event(unsigned short keycode, ModifierMask modifiers) {
-    const auto key = key_for_code(keycode);
+    const auto key = key_for_code(keycode, nullptr);
     if (key.empty())
       return;
     Shortcut pressed{modifiers, key};
@@ -108,16 +115,42 @@ struct Listener::Impl {
     }
   }
 
-  static std::string key_for_code(unsigned short code) {
-    static const char *keys[] = {
-        "a",     "s",  "d",      "f",      "h",     "g",    "z",    "x",
-        "c",     "v",  "b",      "q",      "w",     "e",    "r",    "y",
-        "t",     "1",  "2",      "3",      "4",     "6",    "5",    "=",
-        "9",     "7",  "-",      "8",      "0",     "]",    "o",    "u",
-        "[",     "i",  "p",      "return", "l",     "j",    "'",    "k",
-        ";",     "\\", "comma",  "/",      "n",     "m",    ".",    "tab",
-        "space", "`",  "delete", "escape", "right", "left", "down", "up"};
-    return code < sizeof(keys) / sizeof(keys[0]) ? keys[code] : std::string{};
+  static std::string key_for_code(unsigned short code, CGEventRef event) {
+    if (event != nullptr) {
+      UniChar buffer[4];
+      UniCharCount length = 0;
+      CGEventKeyboardGetUnicodeString(event, sizeof(buffer), &length, buffer);
+      if (length > 0) {
+        const auto characters = CFStringCreateWithCharacters(
+            kCFAllocatorDefault, buffer, length);
+        if (characters != nullptr) {
+          NSString *ns = (__bridge NSString *)characters;
+          const auto lowered = [ns.lowercaseString UTF8String];
+          CFRelease(characters);
+          if (lowered != nullptr) {
+            std::string value(lowered);
+            if (value == " ") return "space";
+            if (value == "\n" || value == "\r") return "return";
+            if (value == "\t") return "tab";
+            if (value == "\x7f") return "delete";
+            if (value == "\x1b") return "escape";
+            return value;
+          }
+        }
+      }
+    }
+
+    switch (code) {
+      case 126: return "up";
+      case 125: return "down";
+      case 124: return "right";
+      case 123: return "left";
+      case 51: return "delete";
+      case 53: return "escape";
+      case 36: return "return";
+      case 48: return "tab";
+      default: return std::string{};
+    }
   }
 
   std::vector<ShortcutConfig> shortcuts;
