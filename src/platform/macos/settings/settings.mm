@@ -113,12 +113,6 @@ bool sync_launch_agent(const SettingsModel &model) {
   return run_launchctl({"bootstrap", domain, model.launch_agent_path.string()});
 }
 
-void apply_settings() {
-  active_model->save();
-  active_listener->set_shortcuts(active_model->shortcuts);
-  active_overlay->set_settings(active_model->overlay);
-}
-
 void swift_callback(int32_t action, int32_t index, const char *value) {
   if (active_model == nullptr) return;
   const auto item = static_cast<std::size_t>(index);
@@ -148,15 +142,18 @@ void swift_callback(int32_t action, int32_t index, const char *value) {
     }
     break;
   case 8:
-    break;
+    active_model->save();
+    active_listener->set_shortcuts(active_model->shortcuts);
+    active_overlay->set_settings(active_model->overlay);
+    return;
   case 9:
     active_model->launch_on_login = index != 0;
     sync_launch_agent(*active_model);
-    break;
+    active_model->save();
+    return;
   default:
     return;
   }
-  apply_settings();
 }
 
 } // namespace
@@ -167,7 +164,9 @@ SettingsModel SettingsModel::load(const std::filesystem::path &config_path) {
   model.preferences_path = config_path.parent_path() / "preferences.conf";
   model.launch_agent_path = std::filesystem::path(std::string([[NSHomeDirectory() stringByAppendingPathComponent:@"Library/LaunchAgents/com.oatmeal.app.plist"] UTF8String]));
   model.shortcuts = load_config(config_path);
-  model.launch_on_login = std::filesystem::exists(model.launch_agent_path);
+  
+  const auto launch_on_login_str = value_for(model.preferences_path, "launch_on_login");
+  model.launch_on_login = (launch_on_login_str == "1") || std::filesystem::exists(model.launch_agent_path);
 
   const auto theme = value_for(model.preferences_path, "theme");
   if (theme == "light") model.overlay.theme = OverlayTheme::Light;
@@ -189,7 +188,7 @@ bool SettingsModel::save() const {
   if (!output) return false;
   const char *theme = overlay.theme == OverlayTheme::Light ? "light" : overlay.theme == OverlayTheme::Graphite ? "graphite" : "dark";
   const char *position = overlay.position == OverlayPosition::BottomCenter ? "bottom-center" : overlay.position == OverlayPosition::TopLeft ? "top-left" : overlay.position == OverlayPosition::TopRight ? "top-right" : "top-center";
-  output << "theme=" << theme << "\nposition=" << position << "\nduration=" << overlay.duration << "\n";
+  output << "theme=" << theme << "\nposition=" << position << "\nduration=" << overlay.duration << "\nlaunch_on_login=" << (launch_on_login ? "1" : "0") << "\n";
   return true;
 }
 
