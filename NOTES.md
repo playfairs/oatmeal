@@ -1,12 +1,12 @@
-# Oatmeal REWLSSS (so follow them ok?)
+# Oatmeal Rules.
 
-These rules apply to gawwwhhhhkk and him only UHHHHHHHHGGHHHHHHHH (im so fucking sorry)
+These rules apply to anyone who is looking to work on the project.
 
 ---
 
 ## Platform separation
 
-i gave Oatmeal some independent platform implementations:
+I gave Oatmeal some independent platform implementations:
 
 ```text
 src/platform/macos/
@@ -89,8 +89,8 @@ The exact native Windows UI technology may be selected when Windows UI work
 begins. Do not prematurely implement that choice.
 
 The windows ui is intentionally not implemented in this task... The current
-Windows foundation just preps independent lc and input boundaries so a
-you GAWHHHHHKKK can add native ui without restructuring the backend.
+Windows foundation just preps independent lc and input boundaries so you
+can add native ui without restructuring the backend.
 There is currently no Windows overlay, overlay rendering, settings window,
 settings control, menu/tray UI, animation, styling, theme, layout, or UI
 component implementation.
