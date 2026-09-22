@@ -6,7 +6,7 @@
   openssl,
   wayland,
   stdenv,
-  jdk25,
+  jdk21,
   lib,
   icu,
   ... # capture inputs
@@ -17,7 +17,7 @@ mkShell {
     llvmPackages_21.clang
     kotlin-language-server
     gradle_9
-    jdk25
+    jdk21
   ];
 
   nativeBuildInputs = [
