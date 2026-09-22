@@ -1,23 +1,9 @@
-set swift_settings_object := `mkdir -p build/debug/oatmeal && swiftc -parse-as-library -target arm64-apple-macosx15.0 -c src/platform/macos/settings/SettingsView.swift -o build/debug/oatmeal/SettingsView.o && printf build/debug/oatmeal/SettingsView.o`
-
 project "oatmeal" {
     version = "0.1.0"
 
-    executable "oatmeal" {
-        sources = [
-            "src/main.cpp",
-            "src/platform/macos/application/application.mm",
-            "src/platform/macos/overlay/overlay.mm",
-            "src/platform/macos/input/listener.mm",
-            "src/platform/macos/menu/menu.mm",
-            "src/platform/macos/settings/settings.mm",
-            "src/core/shortcut/shortcut.cpp",
-            "src/core/config/config.cpp",
-            "src/core/aggregation/aggregation.cpp"
-        ]
-        install = true
-        include_dirs = ["src"]
-        flags = ["-std=c++20", "-Wall", "-Wextra", "-pedantic"]
-        linker_flags = ["build/debug/oatmeal/SettingsView.o", "-framework", "AppKit", "-framework", "Foundation", "-framework", "ApplicationServices", "-framework", "Carbon", "-framework", "SwiftUI"]
+    executable.gradle "app" {
+        gradle_tasks = [":app:build"]
+        gradle_run_tasks = [":app:run"]
+        gradle_options = ["--console=plain"]
     }
 }
