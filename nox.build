@@ -1,5 +1,6 @@
 project "oatmeal" {
     version = "0.1.0"
+    license = file("./UNLICENSE")
 
     executable.gradle "app" {
         gradle_tasks = [":app:build"]
