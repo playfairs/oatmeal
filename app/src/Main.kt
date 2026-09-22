@@ -26,7 +26,7 @@ import org.apache.logging.log4j.LogManager
 import cc.playfairs.oatmeal.logging.Logger
 
 private val setupLogDir = Logger.setupLogDir
-private val logger = LogManager.getLogger("cc.playfairs.oatmeal.Main")
+private val logger = LogManager.getLogger()
 
 fun main() = application {
     logger.info("Initializing compose lifetime...")
