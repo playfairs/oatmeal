@@ -2,6 +2,7 @@ kotlin {
     sourceSets {
         main {
             kotlin.setSrcDirs(listOf("src"))
+            resources.setSrcDirs(listOf("resources"))
         }
         test {
             kotlin.setSrcDirs(listOf("test"))
@@ -12,6 +13,7 @@ kotlin {
 java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(21)
+        vendor = JvmVendorSpec.JETBRAINS
     }
 }
 
@@ -19,6 +21,7 @@ plugins {
     alias(libs.plugins.kotlin.jvm)
     alias(libs.plugins.compose)
     alias(libs.plugins.compose.compiler)
+    kotlin("plugin.serialization") version "2.0.20"
     application
 }
 
@@ -48,15 +51,23 @@ dependencies {
 
     implementation("org.jetbrains.jewel:jewel-foundation:$jewelVersion")
     implementation("org.jetbrains.jewel:jewel-ui:$jewelVersion")
+    implementation("org.jetbrains.jewel:jewel-int-ui-decorated-window:$jewelVersion")
+    implementation("org.jetbrains.jewel:jewel-decorated-window:$jewelVersion")
     implementation("org.jetbrains.jewel:jewel-int-ui-standalone:$jewelVersion")
 
     implementation("org.apache.logging.log4j:log4j-api:2.20.0")
     implementation("org.apache.logging.log4j:log4j-core:2.20.0")
 
+    implementation("com.akuleshov7:ktoml-core:0.5.1")
+
     constraints {
         implementation("org.jetbrains.skiko:skiko-awt-runtime-macos-arm64:0.9.2") {
             because("Jewel pulls in an old Skiko native runtime that lacks RenderNodeContext support")
         }
+    }
+
+    implementation(compose.desktop.currentOs) {
+        exclude(group = "org.jetbrains.compose.material")
     }
 }
 
