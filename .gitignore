@@ -1,3 +1,8 @@
 .gradle
 build
 .kotlin
+nox.state
+bin
+debug
+Debug
+obj
